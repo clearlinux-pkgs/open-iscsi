@@ -1,0 +1,4 @@
+Configure miss: slp.h usability
+Configure miss: slp.h presence
+Configure miss: slp.h
+Configure miss: SLPOpen in -lslp

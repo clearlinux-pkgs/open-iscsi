@@ -1,0 +1,11 @@
+# This file contains the output files that need %exclude. Full path
+# names, one per line.
+
+# Dummy documentation
+/etc/iscsi/ifaces/iface.example
+
+# Should be unique per instance
+/etc/iscsi/initiatorname.iscsi
+
+# All defaults are not changed
+/etc/iscsi/iscsid.conf

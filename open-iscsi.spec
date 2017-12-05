@@ -4,7 +4,7 @@
 #
 Name     : open-iscsi
 Version  : 2.0.875
-Release  : 20
+Release  : 21
 URL      : https://github.com/open-iscsi/open-iscsi/archive/2.0.875.tar.gz
 Source0  : https://github.com/open-iscsi/open-iscsi/archive/2.0.875.tar.gz
 Summary  : No detailed summary available

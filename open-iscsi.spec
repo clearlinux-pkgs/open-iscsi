@@ -4,7 +4,7 @@
 #
 Name     : open-iscsi
 Version  : 2.0.875
-Release  : 22
+Release  : 23
 URL      : https://github.com/open-iscsi/open-iscsi/archive/2.0.875.tar.gz
 Source0  : https://github.com/open-iscsi/open-iscsi/archive/2.0.875.tar.gz
 Summary  : No detailed summary available
@@ -17,6 +17,7 @@ BuildRequires : open-isns-dev
 BuildRequires : openssl-dev
 BuildRequires : util-linux-dev
 Patch1: systemd-units-with-name-generation.patch
+Patch2: 0001-Install-iscsistart.patch
 
 %description
 =================================================================
@@ -50,17 +51,18 @@ doc components for the open-iscsi package.
 %prep
 %setup -q -n open-iscsi-2.0.875
 %patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1512433480
-make V=1  %{?_smp_mflags}
+export SOURCE_DATE_EPOCH=1522368044
+make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1512433480
+export SOURCE_DATE_EPOCH=1522368044
 rm -rf %{buildroot}
 %make_install
 ## make_install_append content
@@ -80,6 +82,7 @@ chmod +x %{buildroot}/usr/bin/iscsi-gen-initiatorname
 /usr/bin/iscsi_discovery
 /usr/bin/iscsiadm
 /usr/bin/iscsid
+/usr/bin/iscsistart
 /usr/bin/iscsiuio
 
 %files config

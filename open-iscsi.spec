@@ -4,7 +4,7 @@
 #
 Name     : open-iscsi
 Version  : 2.0.876
-Release  : 24
+Release  : 25
 URL      : https://github.com/open-iscsi/open-iscsi/archive/2.0.876.tar.gz
 Source0  : https://github.com/open-iscsi/open-iscsi/archive/2.0.876.tar.gz
 Summary  : iSCSI userspace library

@@ -1,4 +1,5 @@
-mkdir -p %{buildroot}/usr/lib/systemd/system
+mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants
 cp etc/systemd/* %{buildroot}/usr/lib/systemd/system
+ln -s ../iscsid.service %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
 cp utils/iscsi-gen-initiatorname %{buildroot}/usr/bin
 chmod +x %{buildroot}/usr/bin/iscsi-gen-initiatorname

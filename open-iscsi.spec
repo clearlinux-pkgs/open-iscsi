@@ -4,7 +4,7 @@
 #
 Name     : open-iscsi
 Version  : 2.0.876
-Release  : 25
+Release  : 27
 URL      : https://github.com/open-iscsi/open-iscsi/archive/2.0.876.tar.gz
 Source0  : https://github.com/open-iscsi/open-iscsi/archive/2.0.876.tar.gz
 Summary  : iSCSI userspace library
@@ -19,10 +19,19 @@ BuildRequires : openssl-dev
 BuildRequires : util-linux-dev
 Patch1: systemd-units-with-name-generation.patch
 Patch2: 0001-Install-iscsistart.patch
+Patch3: 0002-Remove-Werror-from-CFLAGS.patch
 
 %description
 =================================================================
 Linux* Open-iSCSI
+
+%package autostart
+Summary: autostart components for the open-iscsi package.
+Group: Default
+
+%description autostart
+autostart components for the open-iscsi package.
+
 
 %package bin
 Summary: bin components for the open-iscsi package.
@@ -72,28 +81,34 @@ lib components for the open-iscsi package.
 %setup -q -n open-iscsi-2.0.876
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1525210983
+export SOURCE_DATE_EPOCH=1527111418
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1525210983
+export SOURCE_DATE_EPOCH=1527111418
 rm -rf %{buildroot}
 %make_install
 ## make_install_append content
-mkdir -p %{buildroot}/usr/lib/systemd/system
+mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants
 cp etc/systemd/* %{buildroot}/usr/lib/systemd/system
+ln -s ../iscsid.service %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
 cp utils/iscsi-gen-initiatorname %{buildroot}/usr/bin
 chmod +x %{buildroot}/usr/bin/iscsi-gen-initiatorname
 ## make_install_append end
 
 %files
 %defattr(-,root,root,-)
+
+%files autostart
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/multi-user.target.wants/iscsid.service
 
 %files bin
 %defattr(-,root,root,-)
@@ -109,6 +124,7 @@ chmod +x %{buildroot}/usr/bin/iscsi-gen-initiatorname
 
 %files config
 %defattr(-,root,root,-)
+%exclude /usr/lib/systemd/system/multi-user.target.wants/iscsid.service
 /usr/lib/systemd/system/iscsi-gen-initiatorname.service
 /usr/lib/systemd/system/iscsid.service
 /usr/lib/systemd/system/iscsid.socket

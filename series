@@ -1,2 +1,3 @@
 systemd-units-with-name-generation.patch
 0001-Install-iscsistart.patch
+0002-Remove-Werror-from-CFLAGS.patch

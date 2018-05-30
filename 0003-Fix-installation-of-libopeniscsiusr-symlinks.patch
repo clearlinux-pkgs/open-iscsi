@@ -1,0 +1,31 @@
+From bd7708a252c57aab62b773137872ae8c35985a41 Mon Sep 17 00:00:00 2001
+From: Patrick McCarty <patrick.mccarty@intel.com>
+Date: Tue, 29 May 2018 17:37:22 -0700
+Subject: [PATCH 3/3] Fix installation of libopeniscsiusr symlinks
+
+The install(1) command dereferences symlinks when copying to the target
+location, so use an alternate approach to create symlinks from scratch instead.
+
+Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+---
+ libopeniscsiusr/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libopeniscsiusr/Makefile b/libopeniscsiusr/Makefile
+index 4a91fc6..1b1b572 100644
+--- a/libopeniscsiusr/Makefile
++++ b/libopeniscsiusr/Makefile
+@@ -71,8 +71,8 @@ install: $(LIBS) $(LIBS_MAJOR)
+ 	$(INSTALL) -d $(DESTDIR)/$(LIB_DIR)/
+ 	$(INSTALL) -d $(DESTDIR)/$(INCLUDE_DIR)/
+ 	$(INSTALL) $(LIBS) $(DESTDIR)$(LIB_DIR)/
+-	$(INSTALL) $(DEVLIB) $(DESTDIR)$(LIB_DIR)/
+-	$(INSTALL) $(LIBS_MAJOR) $(DESTDIR)$(LIB_DIR)/
++	ln -sf $(LIBS) $(DESTDIR)/$(LIB_DIR)/$(DEVLIB)
++	ln -sf $(LIBS) $(DESTDIR)/$(LIB_DIR)/$(LIBS_MAJOR)
+ 	$(INSTALL) $(HEADERS) $(DESTDIR)$(INCLUDE_DIR)/
+ 	$(INSTALL) -m 644 -D $(PKGFILE).in $(DESTDIR)$(PKGCONF_DIR)/$(PKGFILE)
+ 	perl -i -pe 's|__VERSION__|$(LIBNVME_VERSION)|g' \
+-- 
+2.17.0
+

@@ -4,7 +4,7 @@
 #
 Name     : open-iscsi
 Version  : 2.0.876
-Release  : 27
+Release  : 28
 URL      : https://github.com/open-iscsi/open-iscsi/archive/2.0.876.tar.gz
 Source0  : https://github.com/open-iscsi/open-iscsi/archive/2.0.876.tar.gz
 Summary  : iSCSI userspace library
@@ -20,6 +20,7 @@ BuildRequires : util-linux-dev
 Patch1: systemd-units-with-name-generation.patch
 Patch2: 0001-Install-iscsistart.patch
 Patch3: 0002-Remove-Werror-from-CFLAGS.patch
+Patch4: 0003-Fix-installation-of-libopeniscsiusr-symlinks.patch
 
 %description
 =================================================================
@@ -82,17 +83,18 @@ lib components for the open-iscsi package.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1527111418
+export SOURCE_DATE_EPOCH=1527642310
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1527111418
+export SOURCE_DATE_EPOCH=1527642310
 rm -rf %{buildroot}
 %make_install
 ## make_install_append content

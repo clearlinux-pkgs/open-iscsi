@@ -1,7 +1,7 @@
-From cf5471b92fbcedf168a7676f4ad42e481a53366e Mon Sep 17 00:00:00 2001
+From 823b7ab54352cb78be3b22b1092e27947e3e8f6e Mon Sep 17 00:00:00 2001
 From: William Douglas <william.douglas@intel.com>
 Date: Wed, 23 May 2018 21:33:01 +0000
-Subject: [PATCH] Remove -Werror from CFLAGS
+Subject: [PATCH 2/3] Remove -Werror from CFLAGS
 
 ---
  libopeniscsiusr/Makefile | 2 +-

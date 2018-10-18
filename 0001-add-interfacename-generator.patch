@@ -1,0 +1,75 @@
+From 2ac15bf2be17e1775d33afe799c003fb009873bd Mon Sep 17 00:00:00 2001
+From: Dimitri John Ledkov <dimitri.j.ledkov@intel.com>
+Date: Mon, 11 May 2015 13:31:36 +0100
+Subject: [PATCH 1/4] add interfacename generator
+
+Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+---
+ etc/systemd/iscsi-gen-initiatorname.service | 9 +++++++++
+ etc/systemd/iscsid.service                  | 5 +++--
+ utils/iscsi-gen-initiatorname               | 5 +++--
+ 3 files changed, 15 insertions(+), 4 deletions(-)
+ create mode 100644 etc/systemd/iscsi-gen-initiatorname.service
+
+diff --git a/etc/systemd/iscsi-gen-initiatorname.service b/etc/systemd/iscsi-gen-initiatorname.service
+new file mode 100644
+index 0000000..df673bd
+--- /dev/null
++++ b/etc/systemd/iscsi-gen-initiatorname.service
+@@ -0,0 +1,9 @@
++[Unit]
++Description=iSCSI InitiatorName Generator
++ConditionPathExists=!/etc/iscsi/initiatorname.iscsi
++
++[Service]
++ExecStart=/usr/bin/iscsi-gen-initiatorname
++Type=oneshot
++RemainAfterExit=yes
++
+diff --git a/etc/systemd/iscsid.service b/etc/systemd/iscsid.service
+index f5e8979..703b43a 100644
+--- a/etc/systemd/iscsid.service
++++ b/etc/systemd/iscsid.service
+@@ -2,13 +2,14 @@
+ Description=Open-iSCSI
+ Documentation=man:iscsid(8) man:iscsiuio(8) man:iscsiadm(8)
+ DefaultDependencies=no
+-After=network.target iscsiuio.service
++Wants=network-online.target iscsi-gen-initiatorname.service
++After=network.target network-online.target iscsi-gen-initiatorname.service iscsiuio.service
+ Before=remote-fs-pre.target
+ 
+ [Service]
+ Type=notify
+ NotifyAccess=main
+-ExecStart=/sbin/iscsid -f
++ExecStart=/usr/bin/iscsid -f
+ KillMode=mixed
+ 
+ [Install]
+diff --git a/utils/iscsi-gen-initiatorname b/utils/iscsi-gen-initiatorname
+index 88bd43b..44eaa86 100755
+--- a/utils/iscsi-gen-initiatorname
++++ b/utils/iscsi-gen-initiatorname
+@@ -22,6 +22,8 @@ if [ -d /sys/firmware/ibft/initiator ] ; then
+     read iSCSI_INITIATOR_NAME < /sys/firmware/ibft/initiator/initiator-name
+ fi
+ 
++mkdir -p /etc/iscsi
++
+ if [ -f /etc/iscsi/initiatorname.iscsi -a -z "$FORCE" ] ; then
+     if [ "$iSCSI_INITIATOR_NAME" ] ; then
+ 	eval $(cat /etc/iscsi/initiatorname.iscsi | sed -e '/^#/d')
+@@ -65,8 +67,7 @@ if [ ! -f /etc/iscsi/initiatorname.iscsi ] ; then
+ ## may reject this initiator.  The InitiatorName must be unique
+ ## for each iSCSI initiator.  Do NOT duplicate iSCSI InitiatorNames.
+ EOF
+-	ISSUEDATE="1996-04"
+-	INAME=$(/sbin/iscsi-iname -p iqn.$ISSUEDATE.de.suse:01)
++	INAME=$(/sbin/iscsi-iname)
+ 	printf "InitiatorName=$INAME\n"  >>/etc/iscsi/initiatorname.iscsi
+ 	chmod 0600 /etc/iscsi/initiatorname.iscsi
+ fi
+-- 
+2.19.1
+

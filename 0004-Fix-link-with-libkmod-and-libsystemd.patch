@@ -1,0 +1,59 @@
+From f3bbfafc07e6e20b7aa870ac9c1190e72eb4b07e Mon Sep 17 00:00:00 2001
+From: Patrick McCarty <patrick.mccarty@intel.com>
+Date: Thu, 18 Oct 2018 16:36:04 -0700
+Subject: [PATCH 4/4] Fix link with libkmod and libsystemd
+
+The linker flags were not being passed to the compiler...
+
+Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+---
+ libopeniscsiusr/Makefile | 2 +-
+ usr/Makefile             | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/libopeniscsiusr/Makefile b/libopeniscsiusr/Makefile
+index 8011097..0d1172c 100644
+--- a/libopeniscsiusr/Makefile
++++ b/libopeniscsiusr/Makefile
+@@ -44,7 +44,7 @@ OBJS = context.o misc.o session.o sysfs.o iface.o idbm.o node.o default.o
+ CFLAGS ?= -O2 -g
+ CFLAGS += -Wall -Wextra -fvisibility=hidden -fPIC
+ 
+-LIBADD =
++LIBADD = -lkmod
+ 
+ all: $(LIBS) $(LIBS_MAJOR) $(TESTS) doc
+ 
+diff --git a/usr/Makefile b/usr/Makefile
+index f9445ad..17436fa 100644
+--- a/usr/Makefile
++++ b/usr/Makefile
+@@ -37,6 +37,7 @@ WARNFLAGS ?= -Wall -Wstrict-prototypes
+ CFLAGS += $(WARNFLAGS) -I../include -I. -D_GNU_SOURCE \
+ 	  -I$(TOPDIR)/libopeniscsiusr
+ ISCSI_LIB = -L$(TOPDIR)/libopeniscsiusr -lopeniscsiusr
++LIBADD = -lkmod -lsystemd
+ PROGRAMS = iscsid iscsiadm iscsistart
+ 
+ # libc compat files
+@@ -60,14 +61,14 @@ all: $(PROGRAMS)
+ 
+ iscsid: $(ISCSI_LIB_SRCS) $(INITIATOR_SRCS) $(DISCOVERY_SRCS) \
+ 	iscsid.o session_mgmt.o discoveryd.o mntcheck.o
+-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@  -lisns -lcrypto -lrt -lmount $(ISCSI_LIB)
++	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@  -lisns -lcrypto -lrt -lmount $(ISCSI_LIB) $(LIBADD)
+ 
+ iscsiadm: $(ISCSI_LIB_SRCS) $(DISCOVERY_SRCS) iscsiadm.o session_mgmt.o mntcheck.o
+-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ -lisns -lcrypto -lmount $(ISCSI_LIB)
++	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ -lisns -lcrypto -lmount $(ISCSI_LIB) $(LIBADD)
+ 
+ iscsistart: $(ISCSI_LIB_SRCS) $(INITIATOR_SRCS) $(FW_BOOT_SRCS) \
+ 		iscsistart.o statics.o
+-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ -lrt $(ISCSI_LIB)
++	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ -lrt $(ISCSI_LIB) $(LIBADD)
+ clean:
+ 	rm -f *.o $(PROGRAMS) .depend $(LIBSYS)
+ 
+-- 
+2.19.1
+

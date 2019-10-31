@@ -1,7 +1,7 @@
-From 2ac15bf2be17e1775d33afe799c003fb009873bd Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Dimitri John Ledkov <dimitri.j.ledkov@intel.com>
 Date: Mon, 11 May 2015 13:31:36 +0100
-Subject: [PATCH 1/4] add interfacename generator
+Subject: [PATCH] add interfacename generator
 
 Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
 ---
@@ -27,7 +27,7 @@ index 0000000..df673bd
 +RemainAfterExit=yes
 +
 diff --git a/etc/systemd/iscsid.service b/etc/systemd/iscsid.service
-index f5e8979..703b43a 100644
+index 4fef168..08fee00 100644
 --- a/etc/systemd/iscsid.service
 +++ b/etc/systemd/iscsid.service
 @@ -2,13 +2,14 @@
@@ -45,8 +45,8 @@ index f5e8979..703b43a 100644
 -ExecStart=/sbin/iscsid -f
 +ExecStart=/usr/bin/iscsid -f
  KillMode=mixed
+ Restart=on-failure
  
- [Install]
 diff --git a/utils/iscsi-gen-initiatorname b/utils/iscsi-gen-initiatorname
 index 88bd43b..44eaa86 100755
 --- a/utils/iscsi-gen-initiatorname
@@ -70,6 +70,3 @@ index 88bd43b..44eaa86 100755
  	printf "InitiatorName=$INAME\n"  >>/etc/iscsi/initiatorname.iscsi
  	chmod 0600 /etc/iscsi/initiatorname.iscsi
  fi
--- 
-2.19.1
-

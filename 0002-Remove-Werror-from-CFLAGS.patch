@@ -1,25 +1,22 @@
-From 7c500f302227f8fd1fc4250cde790508f2b1e153 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: William Douglas <william.douglas@intel.com>
 Date: Wed, 23 May 2018 21:33:01 +0000
-Subject: [PATCH 3/4] Remove -Werror from CFLAGS
+Subject: [PATCH] Remove -Werror from CFLAGS
 
 ---
  libopeniscsiusr/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/libopeniscsiusr/Makefile b/libopeniscsiusr/Makefile
-index bf7c96c..8011097 100644
+index a045a45..5d917c7 100644
 --- a/libopeniscsiusr/Makefile
 +++ b/libopeniscsiusr/Makefile
-@@ -42,7 +42,7 @@ EXTRA_MAN_FILES = libopeniscsiusr.h.3
+@@ -44,7 +44,7 @@ EXTRA_MAN_FILES = libopeniscsiusr.h.3
  OBJS = context.o misc.o session.o sysfs.o iface.o idbm.o node.o default.o
  
  CFLAGS ?= -O2 -g
 -CFLAGS += -Wall -Werror -Wextra -fvisibility=hidden -fPIC
 +CFLAGS += -Wall -Wextra -fvisibility=hidden -fPIC
+ CFLAGS += $(shell $(PKG_CONFIG) --cflags libkmod)
  
- LIBADD =
- 
--- 
-2.19.1
-
+ LDFLAGS += $(shell $(PKG_CONFIG) --libs libkmod)

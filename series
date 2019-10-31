@@ -1,4 +1,2 @@
 0001-add-interfacename-generator.patch
-0002-Install-iscsistart.patch
-0003-Remove-Werror-from-CFLAGS.patch
-0004-Fix-link-with-libkmod-and-libsystemd.patch
+0002-Remove-Werror-from-CFLAGS.patch

@@ -1,5 +1,6 @@
 # This file contains additional build requirements that did not get
 # picked up automatically. One name per line, no whitespace.
-util-linux-dev
+kmod-dev
 open-isns-dev
 openssl-dev
+util-linux-dev

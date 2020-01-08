@@ -1,2 +1,3 @@
 0001-add-interfacename-generator.patch
 0002-Remove-Werror-from-CFLAGS.patch
+0001-Fix-bug-with-libopeniscsiusr.pc.patch

@@ -4,7 +4,7 @@
 #
 Name     : open-iscsi
 Version  : 2.1.0
-Release  : 31
+Release  : 32
 URL      : https://github.com/open-iscsi/open-iscsi/archive/2.1.0/open-iscsi-2.1.0.tar.gz
 Source0  : https://github.com/open-iscsi/open-iscsi/archive/2.1.0/open-iscsi-2.1.0.tar.gz
 Summary  : iSCSI userspace library
@@ -23,6 +23,7 @@ BuildRequires : pkgconfig(libsystemd)
 BuildRequires : util-linux-dev
 Patch1: 0001-add-interfacename-generator.patch
 Patch2: 0002-Remove-Werror-from-CFLAGS.patch
+Patch3: 0001-Fix-bug-with-libopeniscsiusr.pc.patch
 
 %description
 =================================================================
@@ -96,13 +97,14 @@ services components for the open-iscsi package.
 cd %{_builddir}/open-iscsi-2.1.0
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1578509808
+export SOURCE_DATE_EPOCH=1578510657
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
@@ -112,7 +114,7 @@ make  %{?_smp_mflags}
 
 
 %install
-export SOURCE_DATE_EPOCH=1578509808
+export SOURCE_DATE_EPOCH=1578510657
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/open-iscsi
 cp %{_builddir}/open-iscsi-2.1.0/COPYING %{buildroot}/usr/share/package-licenses/open-iscsi/4cc77b90af91e615a64ae04893fdffa7939db84c

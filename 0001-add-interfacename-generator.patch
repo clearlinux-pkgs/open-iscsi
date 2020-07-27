@@ -6,9 +6,9 @@ Subject: [PATCH] add interfacename generator
 Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
 ---
  etc/systemd/iscsi-gen-initiatorname.service | 9 +++++++++
- etc/systemd/iscsid.service                  | 5 +++--
+ etc/systemd/iscsid.service                  | 6 +++---
  utils/iscsi-gen-initiatorname               | 5 +++--
- 3 files changed, 15 insertions(+), 4 deletions(-)
+ 3 files changed, 15 insertions(+), 5 deletions(-)
  create mode 100644 etc/systemd/iscsi-gen-initiatorname.service
 
 diff --git a/etc/systemd/iscsi-gen-initiatorname.service b/etc/systemd/iscsi-gen-initiatorname.service
@@ -27,17 +27,18 @@ index 0000000..df673bd
 +RemainAfterExit=yes
 +
 diff --git a/etc/systemd/iscsid.service b/etc/systemd/iscsid.service
-index 4fef168..08fee00 100644
+index 648ceea..46e808e 100644
 --- a/etc/systemd/iscsid.service
 +++ b/etc/systemd/iscsid.service
-@@ -2,13 +2,14 @@
+@@ -2,14 +2,14 @@
  Description=Open-iSCSI
  Documentation=man:iscsid(8) man:iscsiuio(8) man:iscsiadm(8)
  DefaultDependencies=no
 -After=network.target iscsiuio.service
-+Wants=network-online.target iscsi-gen-initiatorname.service
 +After=network.target network-online.target iscsi-gen-initiatorname.service iscsiuio.service
  Before=remote-fs-pre.target
+-Wants=remote-fs-pre.target
++Wants=remote-fs-pre.target network-online.target iscsi-gen-initiatorname.service
  
  [Service]
  Type=notify

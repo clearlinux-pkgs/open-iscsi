@@ -1,5 +1,5 @@
 PKG_NAME := open-iscsi
-URL = https://github.com/open-iscsi/open-iscsi/archive/2.1.2/open-iscsi-2.1.2.tar.gz
+URL = https://github.com/open-iscsi/open-iscsi/archive/2.1.3/open-iscsi-2.1.3.tar.gz
 ARCHIVES = 
 
 include ../common/Makefile.common

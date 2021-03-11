@@ -5,18 +5,18 @@ Subject: [PATCH] add interfacename generator
 
 Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
 ---
- etc/systemd/iscsi-gen-initiatorname.service | 9 +++++++++
+ etc/systemd/iscsi-gen-initiatorname.service | 8 ++++++++
  etc/systemd/iscsid.service                  | 6 +++---
  utils/iscsi-gen-initiatorname               | 5 +++--
- 3 files changed, 15 insertions(+), 5 deletions(-)
+ 3 files changed, 14 insertions(+), 5 deletions(-)
  create mode 100644 etc/systemd/iscsi-gen-initiatorname.service
 
 diff --git a/etc/systemd/iscsi-gen-initiatorname.service b/etc/systemd/iscsi-gen-initiatorname.service
 new file mode 100644
-index 0000000..df673bd
+index 0000000..51e6508
 --- /dev/null
 +++ b/etc/systemd/iscsi-gen-initiatorname.service
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,8 @@
 +[Unit]
 +Description=iSCSI InitiatorName Generator
 +ConditionPathExists=!/etc/iscsi/initiatorname.iscsi
@@ -25,20 +25,20 @@ index 0000000..df673bd
 +ExecStart=/usr/bin/iscsi-gen-initiatorname
 +Type=oneshot
 +RemainAfterExit=yes
-+
 diff --git a/etc/systemd/iscsid.service b/etc/systemd/iscsid.service
-index 648ceea..46e808e 100644
+index 3fd7dd3..3888d06 100644
 --- a/etc/systemd/iscsid.service
 +++ b/etc/systemd/iscsid.service
-@@ -2,14 +2,14 @@
+@@ -2,15 +2,15 @@
  Description=Open-iSCSI
  Documentation=man:iscsid(8) man:iscsiuio(8) man:iscsiadm(8)
  DefaultDependencies=no
--After=network.target iscsiuio.service
-+After=network.target network-online.target iscsi-gen-initiatorname.service iscsiuio.service
+-After=network-online.target iscsiuio.service iscsi-init.service
++After=network-online.target iscsi-gen-initiatorname.service iscsiuio.service iscsi-init.service
  Before=remote-fs-pre.target
 -Wants=remote-fs-pre.target
 +Wants=remote-fs-pre.target network-online.target iscsi-gen-initiatorname.service
+ Requires=iscsi-init.service
  
  [Service]
  Type=notify

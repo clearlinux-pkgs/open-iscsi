@@ -6,9 +6,9 @@ Subject: [PATCH] add interfacename generator
 Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
 ---
  etc/systemd/iscsi-gen-initiatorname.service | 8 ++++++++
- etc/systemd/iscsid.service                  | 6 +++---
- utils/iscsi-gen-initiatorname               | 5 +++--
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ etc/systemd/iscsid.service                  | 4 ++--
+ utils/iscsi-gen-initiatorname               | 4 +++-
+ 3 files changed, 13 insertions(+), 3 deletions(-)
  create mode 100644 etc/systemd/iscsi-gen-initiatorname.service
 
 diff --git a/etc/systemd/iscsi-gen-initiatorname.service b/etc/systemd/iscsi-gen-initiatorname.service
@@ -26,10 +26,10 @@ index 0000000..51e6508
 +Type=oneshot
 +RemainAfterExit=yes
 diff --git a/etc/systemd/iscsid.service b/etc/systemd/iscsid.service
-index 3fd7dd3..3888d06 100644
+index e2a50d3..b7b8c6e 100644
 --- a/etc/systemd/iscsid.service
 +++ b/etc/systemd/iscsid.service
-@@ -2,15 +2,15 @@
+@@ -2,9 +2,9 @@
  Description=Open-iSCSI
  Documentation=man:iscsid(8) man:iscsiuio(8) man:iscsiadm(8)
  DefaultDependencies=no
@@ -41,33 +41,25 @@ index 3fd7dd3..3888d06 100644
  Requires=iscsi-init.service
  
  [Service]
- Type=notify
- NotifyAccess=main
--ExecStart=/sbin/iscsid -f
-+ExecStart=/usr/bin/iscsid -f
- KillMode=mixed
- Restart=on-failure
- 
 diff --git a/utils/iscsi-gen-initiatorname b/utils/iscsi-gen-initiatorname
-index 88bd43b..44eaa86 100755
+index e182f8a..c9b0d58 100755
 --- a/utils/iscsi-gen-initiatorname
 +++ b/utils/iscsi-gen-initiatorname
-@@ -22,6 +22,8 @@ if [ -d /sys/firmware/ibft/initiator ] ; then
+@@ -44,6 +44,8 @@ if [ -d /sys/firmware/ibft/initiator ] ; then
      read iSCSI_INITIATOR_NAME < /sys/firmware/ibft/initiator/initiator-name
  fi
  
 +mkdir -p /etc/iscsi
 +
- if [ -f /etc/iscsi/initiatorname.iscsi -a -z "$FORCE" ] ; then
-     if [ "$iSCSI_INITIATOR_NAME" ] ; then
- 	eval $(cat /etc/iscsi/initiatorname.iscsi | sed -e '/^#/d')
-@@ -65,8 +67,7 @@ if [ ! -f /etc/iscsi/initiatorname.iscsi ] ; then
- ## may reject this initiator.  The InitiatorName must be unique
+ # if we have an iBFT initiator name and an initiator name
+ # file, they had better match, unless "force" is set
+ if [ -f $INAME_FILE -a -z "$FORCE" ] ; then
+@@ -94,7 +96,7 @@ if [ ! -f $INAME_FILE ] ; then
  ## for each iSCSI initiator.  Do NOT duplicate iSCSI InitiatorNames.
  EOF
--	ISSUEDATE="1996-04"
--	INAME=$(/sbin/iscsi-iname -p iqn.$ISSUEDATE.de.suse:01)
-+	INAME=$(/sbin/iscsi-iname)
- 	printf "InitiatorName=$INAME\n"  >>/etc/iscsi/initiatorname.iscsi
- 	chmod 0600 /etc/iscsi/initiatorname.iscsi
+     # create a unique initiator name using iscsi-iname
+-    INAME=$(@SBINDIR@/iscsi-iname -p "$IQN_PREFIX")
++    INAME=$(@SBINDIR@/iscsi-iname)
+     echo "InitiatorName=$INAME" >> $INAME_FILE
+     chmod 0600 $INAME_FILE
  fi

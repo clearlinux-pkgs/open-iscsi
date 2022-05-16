@@ -1,3 +1,6 @@
 mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants
 cp -a etc/systemd/iscsi-gen-initiatorname.service %{buildroot}/usr/lib/systemd/system
 ln -s ../iscsid.service %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
+
+# fix perms on the unit files
+chmod -x %{buildroot}/usr/lib/systemd/system/*.{socket,service}

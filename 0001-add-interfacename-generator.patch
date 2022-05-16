@@ -5,17 +5,32 @@ Subject: [PATCH] add interfacename generator
 
 Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
 ---
- etc/systemd/iscsi-gen-initiatorname.service | 8 ++++++++
- etc/systemd/iscsid.service                  | 4 ++--
- utils/iscsi-gen-initiatorname               | 4 +++-
- 3 files changed, 13 insertions(+), 3 deletions(-)
- create mode 100644 etc/systemd/iscsi-gen-initiatorname.service
+ etc/Makefile                                         | 3 ++-
+ etc/systemd/iscsi-gen-initiatorname.service.template | 8 ++++++++
+ etc/systemd/iscsid.service.template                  | 4 ++--
+ utils/iscsi-gen-initiatorname.sh.template            | 4 +++-
+ 4 files changed, 15 insertions(+), 4 deletions(-)
+ create mode 100644 etc/systemd/iscsi-gen-initiatorname.service.template
 
-diff --git a/etc/systemd/iscsi-gen-initiatorname.service b/etc/systemd/iscsi-gen-initiatorname.service
+diff --git a/etc/Makefile b/etc/Makefile
+index d065319..b3dbefc 100644
+--- a/etc/Makefile
++++ b/etc/Makefile
+@@ -27,7 +27,8 @@ SYSTEMD_SOURCES		= $(addprefix systemd/,$(SYSTEMD_SOURCE_FILES))
+ SYSTEMD_TEMPLATE_FILES	= iscsi-init.service.template \
+ 			  iscsid.service.template \
+ 			  iscsi.service.template \
+-			  iscsiuio.service.template
++			  iscsiuio.service.template \
++			  iscsi-gen-initiatorname.service.template
+ SYSTEMD_TEMPLATES	= $(addprefix systemd/,$(SYSTEMD_TEMPLATE_FILES))
+ SYSTEMD_RULES_FILES	= ibft-rule-generator
+ SYSTEMD_RULES_SOURCES	= $(addprefix systemd/,$(SYSTEMD_RULES_FILES))
+diff --git a/etc/systemd/iscsi-gen-initiatorname.service.template b/etc/systemd/iscsi-gen-initiatorname.service.template
 new file mode 100644
 index 0000000..51e6508
 --- /dev/null
-+++ b/etc/systemd/iscsi-gen-initiatorname.service
++++ b/etc/systemd/iscsi-gen-initiatorname.service.template
 @@ -0,0 +1,8 @@
 +[Unit]
 +Description=iSCSI InitiatorName Generator
@@ -25,10 +40,10 @@ index 0000000..51e6508
 +ExecStart=/usr/bin/iscsi-gen-initiatorname
 +Type=oneshot
 +RemainAfterExit=yes
-diff --git a/etc/systemd/iscsid.service b/etc/systemd/iscsid.service
+diff --git a/etc/systemd/iscsid.service.template b/etc/systemd/iscsid.service.template
 index e2a50d3..b7b8c6e 100644
---- a/etc/systemd/iscsid.service
-+++ b/etc/systemd/iscsid.service
+--- a/etc/systemd/iscsid.service.template
++++ b/etc/systemd/iscsid.service.template
 @@ -2,9 +2,9 @@
  Description=Open-iSCSI
  Documentation=man:iscsid(8) man:iscsiuio(8) man:iscsiadm(8)
@@ -41,25 +56,25 @@ index e2a50d3..b7b8c6e 100644
  Requires=iscsi-init.service
  
  [Service]
-diff --git a/utils/iscsi-gen-initiatorname b/utils/iscsi-gen-initiatorname
-index e182f8a..c9b0d58 100755
---- a/utils/iscsi-gen-initiatorname
-+++ b/utils/iscsi-gen-initiatorname
-@@ -44,6 +44,8 @@ if [ -d /sys/firmware/ibft/initiator ] ; then
-     read iSCSI_INITIATOR_NAME < /sys/firmware/ibft/initiator/initiator-name
- fi
+diff --git a/utils/iscsi-gen-initiatorname.sh.template b/utils/iscsi-gen-initiatorname.sh.template
+index 5c2bfdf..7682c8d 100644
+--- a/utils/iscsi-gen-initiatorname.sh.template
++++ b/utils/iscsi-gen-initiatorname.sh.template
+@@ -130,6 +130,8 @@ KERNEL_INAME="$(kernel_supplied_initiatorname)"
+ # get the iBFT initiator name, if present
+ [ -d $IBFT_SYSFS_DIR ] && read IBFT_INAME < $IBFT_SYSFS_DIR/initiator-name
  
 +mkdir -p /etc/iscsi
 +
- # if we have an iBFT initiator name and an initiator name
- # file, they had better match, unless "force" is set
- if [ -f $INAME_FILE -a -z "$FORCE" ] ; then
-@@ -94,7 +96,7 @@ if [ ! -f $INAME_FILE ] ; then
- ## for each iSCSI initiator.  Do NOT duplicate iSCSI InitiatorNames.
- EOF
+ # get the systemd-supplied initiator name, if present (as InitiatorName)
+ [ -r "$INAME_FILE" ] && . "$INAME_FILE"
+ 
+@@ -181,7 +183,7 @@ else
+     echo "## $INAME_FILE" >> $INAME_FILE
+     echo "$NORMAL_COMMENTS" >> $INAME_FILE
      # create a unique initiator name using iscsi-iname
 -    INAME=$(@SBINDIR@/iscsi-iname -p "$IQN_PREFIX")
 +    INAME=$(@SBINDIR@/iscsi-iname)
      echo "InitiatorName=$INAME" >> $INAME_FILE
-     chmod 0600 $INAME_FILE
  fi
+ 

@@ -8,15 +8,15 @@ Subject: [PATCH] Remove -Werror from CFLAGS
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/libopeniscsiusr/Makefile b/libopeniscsiusr/Makefile
-index 3259982..0e60bbd 100644
+index 52e453a..eebd5b7 100644
 --- a/libopeniscsiusr/Makefile
 +++ b/libopeniscsiusr/Makefile
-@@ -48,7 +48,7 @@ EXTRA_MAN_FILES = libopeniscsiusr.h.3
+@@ -51,7 +51,7 @@ EXTRA_MAN_FILES = libopeniscsiusr.h.3
  OBJS = context.o misc.o session.o sysfs.o iface.o idbm.o node.o default.o
  
  CFLAGS ?= -O2 -g
 -CFLAGS += -Wall -Werror -Wextra -fvisibility=hidden -fPIC
 +CFLAGS += -Wall -Wextra -fvisibility=hidden -fPIC
  CFLAGS += $(shell $(PKG_CONFIG) --cflags libkmod)
- CFLAGS += -DSBINDIR=\"$(sbindir)\"
- 
+ CFLAGS += -DSBINDIR=\"$(SBINDIR)\"
+ CFLAGS += -DISCSI_DB_ROOT=\"$(DBROOT)\"

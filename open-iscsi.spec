@@ -4,7 +4,7 @@
 #
 Name     : open-iscsi
 Version  : 2.1.7
-Release  : 41
+Release  : 42
 URL      : https://github.com/open-iscsi/open-iscsi/archive/2.1.7/open-iscsi-2.1.7.tar.gz
 Source0  : https://github.com/open-iscsi/open-iscsi/archive/2.1.7/open-iscsi-2.1.7.tar.gz
 Summary  : iSCSI userspace library
